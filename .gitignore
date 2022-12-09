@@ -30,3 +30,13 @@
 *.exe
 *.out
 *.app
+
+.DS_Store
+backup/rnd_t.h
+backup/README.md
+backup/parameters.h
+backup/outputGenerator.h
+backup/main.cpp
+backup/LICENSE
+backup/Individual.h
+backup/calculateAverage.h
