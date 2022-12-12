@@ -10,7 +10,7 @@
 struct parameters {
     int totalPopulation;    
     double mutationProb;
-    double meanMutation;
-    double SdMutation;
+    double meanMutationBias; // mutation bias
+    double sdMutationalEffectSize; // mutational effect size
     int tEnd; 
 };
