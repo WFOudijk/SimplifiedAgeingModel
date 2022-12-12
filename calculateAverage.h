@@ -25,15 +25,20 @@ std::array<double, numAgeClasses> calcAverageAcrossAgeClasses(const std::vector<
 }
 
 std::vector<double> calcLifeExpectancyPerIndividual(const std::vector<Individual>& individuals){
+    /**Function to calculate the Life Expectancy per individual . TODO: should 1 be added to the sum? **/
     std::vector<double> lifeExpectancy;
-    for (auto individual : individuals){
-        lifeExpectancy.push_back(individual.averageSurvivalProb[0]);
-        //ouble counter = 1.0;
-        for (int i = 1; i < individual.genesMaternal.size(); ++i){
-            lifeExpectancy[i];
-            lifeExpectancy.push_back(lifeExpectancy[i - 1] + individual.averageSurvivalProb[i]);
+    for (int individual = 0; individual < individuals.size(); ++individual){ // loop through every individual
+        std::vector<double> lifeExpectancyPerIndividual;
+        for (int i = 0; i < individuals[individual].genesMaternal.size(); ++i){ // loop through every age
+            double lifeExpectancyInd =
+                    individuals[individual].averageSurvivalProb[i]; // get survival prob of current age and individual
+            for (int j = 1; j <= i; ++j){ // to make sure every previous survival prob is taken into account
+                lifeExpectancyInd *= individuals[individual].averageSurvivalProb[i - j];
+            }
+            lifeExpectancyPerIndividual.push_back(lifeExpectancyInd);
         }
+        double sum = std::accumulate(lifeExpectancyPerIndividual.begin(), lifeExpectancyPerIndividual.end(), 0.0);
+        lifeExpectancy.push_back(sum); 
     }
-    
     return lifeExpectancy;
 }
