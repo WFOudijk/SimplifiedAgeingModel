@@ -14,17 +14,16 @@
 void createOutput(const std::vector<Individual>& individualVec){
     /**Function to create output to the terminal of Individuals in a vector.
      It calculates the average survival probability for every age or gene. **/
-    std::vector<double> averageSurvivalProb;
     for (auto individual : individualVec){ // for every individual in the vector
-        // calculate average of every gene/ age
-        individual.calculateAverageSurvivalProb();
-        for (double i : averageSurvivalProb) {
-            std::cout << i << " ";
+            // calculate average of every gene/ age
+            for (int i = 0; i < individual.genesMaternal.size(); ++i) {
+                std::cout << individual.averageSurvivalProb[i] << " ";
+            }
+            std::cout << "Age: " << individual.age << " ";
+            std::cout << std::endl;
         }
-        std::cout << "Age: " << individual.age << " ";
-        std::cout << std::endl;
     }
-}
+
 
 void createOutputForPlot(const std::vector<Individual>& males,
                          const std::vector<Individual>& females){
@@ -75,4 +74,18 @@ void createOuputForGGPlot(const std::vector<Individual>& males,
         ofs << t << " " << i << " " << popAverage << std::endl; // write current time, age and average to file
     }
     ofs.close();
+}
+
+void createOutputLifeExpectancy(const std::vector<double>& malesLE,
+                                const std::vector<double>& femalesLE,
+                                const double meanMutEffect){
+    std::ofstream ofs;
+    ofs.open("outputLE.csv", std::ios::app); // output file
+    if (!ofs.is_open()){
+        std::cerr << "Error. Unable to open output file.\n";
+        exit(EXIT_FAILURE);
+    }
+    for (int i = 0; i < malesLE.size(); ++i){
+        ofs << meanMutEffect << " " << malesLE[i] << " " << femalesLE[i] << std::endl;
+    }
 }

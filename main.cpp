@@ -125,19 +125,6 @@ int main(int argc, const char * argv[]) {
         //std::cout << "female size before: " << females.size() << std::endl;
         //std::cout << "offspring vector size before: " << offspringVec.size() << std::endl;
         
-        
-        
-        //  0 1 2 3 4 5 6
-        //        X
-        //  0 1 2 6 4 5 6
-        //  0 1 2 6 4 5
-        
-        //  0 1 2 3 4 5 6
-        //  toAdd = 3
-        //  males.push_back(toAdd);
-        //  toAdd = 6
-        //  0 1 2 3 4 5
-        
         // fill the dead adults spots with random offspring
         while (males.size() < (p.totalPopulation/2)){
             int randIndex = rng.drawRandomNumber(offspringVec.size());
