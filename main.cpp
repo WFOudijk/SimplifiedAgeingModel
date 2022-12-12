@@ -38,6 +38,10 @@ void readParameters(const std::string& parameterFile, parameters& p){ // TODO: m
                 ifs >> p.sdMutationalEffectSize;
                 std::clog << "Parameter " << parID << " is set to " << p.sdMutationalEffectSize << std::endl;
             }
+            else if (parID == "mutationProbability"){
+                ifs >> p.mutationProb;
+                std::clog << "Parameter " << parID << " is set to " << p.mutationProb << std::endl;
+            }
             else {
                 std::cerr << "Error. Unknown parameter in: " << parameterFile << "\n";
                 exit(EXIT_FAILURE);
@@ -63,12 +67,13 @@ int main(int argc, const char * argv[]) {
     // then these will be the parameter values
     p.meanMutationBias = -0.001; // the mean bias of a mutation on survival probability
     p.sdMutationalEffectSize = 0.01; // the mutational effect size on survival probability
-    
+    p.mutationProb = 0.01; // set mutation probability
+
     // read parameter file
     std::string parameterFile;
     if (argc > 1){
         parameterFile = argv[1];
-        readParameters(parameterFile, p); // sets mean and sd parameters
+        readParameters(parameterFile, p); // sets parameters
     }
     
     // set the mutationEffect distribution with mean and sd of mutation
@@ -81,15 +86,15 @@ int main(int argc, const char * argv[]) {
     std::vector<Individual> males(p.totalPopulation / 2, indiv); // intialize males
     std::vector<Individual> females(p.totalPopulation / 2, indiv); // initialize females
     
-    p.mutationProb = 0.01; // set mutation probability
-    p.tEnd = 1000; // end time of simulation
+    p.tEnd = 10000; // end time of simulation
     
     auto t_start = std::chrono::system_clock::now();
     
+    std::vector<int> ageAtDeath;
     for (int t = 0; t < p.tEnd; ++t){
         // reproduce to make offspring
         std::vector<Individual> offspringVec;
-           offspringVec.reserve(females.size() * 2);
+           offspringVec.reserve(females.size() * 2); // to optimize code, reserve the specific space for the offspring vector
         for (double i = 0.0; i < females.size();){
        // for (int i = 0; i < females.size(); ++i){
             if (std::fmod(i, 1) == 0.5){ // if i is a half, the previous female should reproduce again
@@ -104,6 +109,7 @@ int main(int argc, const char * argv[]) {
         for (int male = 0; male < males.size();){
             bool die = males[male].dies(rng);
             if (die){
+                ageAtDeath.push_back(males[male].age);
                 males[male] = males.back();
                 males.pop_back();
             } else {
@@ -116,6 +122,7 @@ int main(int argc, const char * argv[]) {
         for (int female = 0; female < females.size();){
             bool die = females[female].dies(rng);
             if (die){
+                ageAtDeath.push_back(females[female].age);
                 females[female] = females.back();
                 females.pop_back();
             } else {
@@ -155,13 +162,18 @@ int main(int argc, const char * argv[]) {
     
     // to create output of an Individuals vector
     //createOutput(offspringVec);
-    createOutput(males);
+    //createOutput(males);
     //createOutput(females);
     //createOutputForPlot(males, females);
     
     std::vector<double> LEMales = calcLifeExpectancyPerIndividual(males);
     std::vector<double> LEFemales = calcLifeExpectancyPerIndividual(females);
-    //createOutputLifeExpectancy(LEMales, LEFemales, p.meanMutation);
+    //createOutputLifeExpectancy(LEMales, LEFemales, p.meanMutationBias);
+    
+    // to calculate the average age someone dies
+    //for (auto age : ageAtDeath) std::cout << age << " ";
+    std::cout << "total deaths: " << ageAtDeath.size() << std::endl;
+    std::cout << "Average age to die: " << std::accumulate(ageAtDeath.begin(), ageAtDeath.end(), 0.0) / ageAtDeath.size() << std::endl;
     
     return 0;
 }
