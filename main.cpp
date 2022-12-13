@@ -16,41 +16,6 @@
 #include "rnd_t.h"
 #include "outputGenerator.h"
 
-void readParameters(const std::string& parameterFile, parameters& p){ // TODO: mag dit?, moet parameters overal met reference?
-    /**This function receives a parameter file and reads this. Next, the parameters in the file are set to the correct parameters
-     in the parameters object.**/
-    std::ifstream ifs(parameterFile.c_str());
-    if(!ifs.is_open()){
-        std::cerr << "Error. Unable to read the following parameter file: "
-                    << parameterFile << std::endl;
-        exit(EXIT_FAILURE);
-    }
-    std::clog << "Reading parameters from file: " << parameterFile << std::endl;
-    for(;;){
-        std::string parID;
-        ifs >> parID;
-        if(ifs.good()){
-            if (parID == "meanMutationBias"){
-                ifs >> p.meanMutationBias;
-                std::clog << "Parameter " << parID << " is set to " << p.meanMutationBias << std::endl;
-            }
-            else if (parID == "sdMutationalEffectSize"){
-                ifs >> p.sdMutationalEffectSize;
-                std::clog << "Parameter " << parID << " is set to " << p.sdMutationalEffectSize << std::endl;
-            }
-            else if (parID == "mutationProbability"){
-                ifs >> p.mutationProb;
-                std::clog << "Parameter " << parID << " is set to " << p.mutationProb << std::endl;
-            }
-            else {
-                std::cerr << "Error. Unknown parameter in: " << parameterFile << "\n";
-                exit(EXIT_FAILURE);
-            }
-        }
-        else break;
-    }
-}
-
 int main(int argc, const char * argv[]) {
     // obtain seed from system clock
     std::chrono::high_resolution_clock::time_point tp =
@@ -73,7 +38,7 @@ int main(int argc, const char * argv[]) {
     std::string parameterFile;
     if (argc > 1){
         parameterFile = argv[1];
-        readParameters(parameterFile, p); // sets parameters
+        p.readParameters(parameterFile); // sets parameters
     }
     
     // set the mutationEffect distribution with mean and sd of mutation
@@ -116,6 +81,7 @@ int main(int argc, const char * argv[]) {
                 ++male;
             }
         }
+        
         //std::cout << "male size before: " << males.size() << std::endl;
         
         // mortality round of adult females
@@ -156,7 +122,7 @@ int main(int argc, const char * argv[]) {
             std::chrono::duration<double> diff_t = t_now - t_start;
             std::cout << diff_t.count() << " seconds" << std::endl;
             t_start = t_now;
-            //createOuputForGGPlot(males, females, t); // generate data for ggplot
+            //createOuputForGGPlot(males, females, t, p); // generate data for ggplot
         }
     }
     
@@ -173,7 +139,7 @@ int main(int argc, const char * argv[]) {
     // to calculate the average age someone dies
     //for (auto age : ageAtDeath) std::cout << age << " ";
     std::cout << "total deaths: " << ageAtDeath.size() << std::endl;
-    std::cout << "Average age to die: " << std::accumulate(ageAtDeath.begin(), ageAtDeath.end(), 0.0) / ageAtDeath.size() << std::endl;
+    std::cout << "Average age to die: " << std::accumulate(ageAtDeath.begin(), ageAtDeath.end(), 0.0) / ageAtDeath.size() << std::endl; // look at age of death over time
     
     return 0;
 }
