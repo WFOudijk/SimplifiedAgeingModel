@@ -9,11 +9,29 @@
 #pragma once
 
 struct parameters {
-    int totalPopulation;    
-    double mutationProb;
-    double meanMutationBias; // mutation bias
-    double sdMutationalEffectSize; // mutational effect size
-    int tEnd;
+    // initialise the parameters
+    parameters() : totalPopulation(10000),
+                   initSurvProb(0.95),
+                   numOfOffspringPerFemale(1),
+                   mutationProb(0.01),
+                   meanMutationBias(-0.001),
+                   sdMutationalEffectSize(0.01),
+                   extrinsicMortRisk(0.05),
+                   outputTime(1000),
+                   tEnd(10000){
+                       halfPopulation = totalPopulation / 2;
+                   }
+    
+    int totalPopulation; // total population size
+    double halfPopulation; // to determine number of males and females
+    double initSurvProb; // initial survival probability for all the genes
+    int numOfOffspringPerFemale; // number of offspring a female should produce 
+    double mutationProb; // probability a mutation will occur
+    double meanMutationBias; // the mean bias of a mutation on survival probability
+    double sdMutationalEffectSize; // the mutational effect size on survival probability
+    double extrinsicMortRisk; // the extrinsic mortality risk, equal for every adult
+    int outputTime; // when to output info
+    int tEnd; // end of simulation
     
     void readParameters(const std::string& parameterFile);
     void checkParam(const std::string parID,
@@ -22,9 +40,7 @@ struct parameters {
                     std::ifstream& ifs);
 };
 
-
-
-void parameters::checkParam(const std::string parID, // member func of parameters
+void parameters::checkParam(const std::string parID, 
                  const std::string focal_parametername,
                  double& parameter,
                  std::ifstream& ifs) {
@@ -33,7 +49,6 @@ void parameters::checkParam(const std::string parID, // member func of parameter
         std::clog << "Parameter " << parID << " is set to " << parameter << std::endl;
     }
 }
-
 
 void parameters::readParameters(const std::string& parameterFile){
     /**This function receives a parameter file and reads this. Next, the parameters in the file are set to the correct parameters

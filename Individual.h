@@ -6,59 +6,39 @@
 //
 #pragma once
 
-#include <cassert>
 #include "parameters.h"
 #include "rnd_t.h"
 
 #include <array>
 
 const int numAgeClasses = 20;
+using arrayOfGenes = std::array<double, numAgeClasses>;
 
 struct Individual {
     /**Structure Individual with age, maternal genes and paternal genes. Every gene contains a number which
      represents the survival probability. The function calculateSurvivalProb() calculates the average survival probability per gene/ age
     over both parents survival probability per gene/ age. **/
-    int age;
+    unsigned int age;
     // the genes are the survival probability rates per age;
-    std::array<double, numAgeClasses> genesMaternal;
-    std::array<double, numAgeClasses> genesPaternal;
+    arrayOfGenes genesMaternal;
+    arrayOfGenes genesPaternal;
+    // TODO: std::array<2, std::array<double, numAgeClasses>> One array of both mom and dad
     
-    // to calculate the average survival probability by avereging
+    // to calculate the average survival probability by averaging
     // the mothers and fathers survival probability
-    std::array<double, numAgeClasses> averageSurvivalProb;
-    
-    Individual(){ // default constructor with numAgeClasses genes all starting at 0.95
-        genesMaternal.fill(0.95);
-        genesPaternal.fill(0.95);
-        age = 0; // age is equal to zero upon initialization
+    arrayOfGenes averageSurvivalProb;
+    // TODO: Q: this is not default constructor anymore > how to? Need p. 
+    Individual(const parameters& p) : age(0){ // default constructor with numAgeClasses genes all starting at initSurvProb
+        genesMaternal.fill(p.initSurvProb); // get this value from parameter struct
+        genesPaternal.fill(p.initSurvProb);
         calculateAverageSurvivalProb();
     }
+
+    Individual(const Individual& other) = default;
     
-    Individual(double initVal) { // Constructor to change the initial survival probability rate the genes should start at.
-        genesMaternal.fill(initVal);
-        genesPaternal.fill(initVal);
-        calculateAverageSurvivalProb();
-        age = 0;
-    }
-    
-    Individual(const Individual& other){ // copy constructor
-        age = other.age;
-        genesMaternal = other.genesMaternal;
-        genesPaternal = other.genesPaternal;
-        averageSurvivalProb = other.averageSurvivalProb;
-    }
-    
-    Individual(const Individual& mother, const Individual& father, rnd_t& rng, const parameters& p){
+    Individual(const Individual& mother, const Individual& father, rnd_t& rng, const parameters& p): age(0){
         /**Constructor to reproduce and create offspring (with potential mutations). **/
-        age = 0;
-        // initialize genes array
-        genesMaternal = mother.genesMaternal;
-        genesPaternal = father.genesPaternal;
-
-        //assert(genesMaternal.size() == genesPaternal.size());
-        //assert(mother.genesPaternal.size() == father.genesPaternal.size());
-        //assert(mother.genesMaternal.size() == father.genesMaternal.size()); // TODO: is this necessary? 
-
+        //age = 0;
         for (int i = 0; i < numAgeClasses; ++i){ // loop through every gene
             // first, determine offsprings genome
             double geneMom = rng.uniform(); // if 1 is picked, offspring gets grandpa's allele for this gene from its mom
@@ -90,24 +70,27 @@ struct Individual {
     }
     
     void calculateAverageSurvivalProb();
-    bool dies(rnd_t& rng);
+    bool dies(rnd_t& rng, const parameters& p);
 };
 
 void Individual::calculateAverageSurvivalProb(){
     /** Function to calculate the average survival probability of an individual per age. **/
     for (int i = 0; i < genesMaternal.size(); ++i){
-        double average = (genesMaternal[i] + genesPaternal[i]) / 2;
+        double average = (genesMaternal[i] + genesPaternal[i]) * 0.5;
         averageSurvivalProb[i] = average;
     }
 }
 
-bool Individual::dies(rnd_t& rng){
+bool Individual::dies(rnd_t& rng, const parameters& p){
     /**Function to calculate which individuals will die.**/
     // get the survival prob for the age the individual is
-    double survivalProbForAge = averageSurvivalProb[age];
+    const double survivalProbForAge = averageSurvivalProb[age];
     double randomProb = rng.uniform(); // draw random number between 0 and 1
     bool dies = false;
-    if (randomProb < survivalProbForAge){
+    // multiply the survival probability of the individual at its age times
+    // the effect of an extrinsic mortality risk on the survival probability
+    double survivalProbIncExtrinsicRisk = survivalProbForAge * (1 - p.extrinsicMortRisk);
+    if (randomProb < survivalProbIncExtrinsicRisk){
         age += 1; // increment age if individual survives the mortality round
     } else { // male dies
         dies = true; // Individual will die

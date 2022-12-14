@@ -11,7 +11,9 @@
 #include "calculateAverage.h"
 #pragma once
 
-void createOutput(const std::vector<Individual>& individualVec){
+using indVec = std::vector<Individual>;
+
+void createOutput(const indVec& individualVec){
     /**Function to create output to the terminal of Individuals in a vector.
      It calculates the average survival probability for every age or gene. **/
     for (auto individual : individualVec){ // for every individual in the vector
@@ -24,9 +26,8 @@ void createOutput(const std::vector<Individual>& individualVec){
         }
     }
 
-
-void createOutputForPlot(const std::vector<Individual>& males,
-                         const std::vector<Individual>& females){
+void createOutputForPlot(const indVec& males,
+                         const indVec& females){
     /**This function creates the output for a scatter plot where age is at the x-axis and average survival probability at the y-axis. **/
     std::ofstream ofs;
     ofs.open("output.csv"); // output file
@@ -34,6 +35,7 @@ void createOutputForPlot(const std::vector<Individual>& males,
         std::cerr << "Error. Unable to open output file.\n";
         exit(EXIT_FAILURE);
     }
+    
     auto female_avg = calcAverageAcrossAgeClasses(females); // calculate average survival prob per age of the females
     auto male_avg = calcAverageAcrossAgeClasses(males); // calculate average survival prob per age of the males
     
@@ -44,12 +46,17 @@ void createOutputForPlot(const std::vector<Individual>& males,
     ofs.close();    
 }
 
-void createOuputForGGPlot(const std::vector<Individual>& males,
-                          const std::vector<Individual>& females,
-                          const int t){
+void createOuputForGGPlot(const indVec& males,
+                          const indVec& females,
+                          const int t,
+                          const parameters& p){
     /**Function to create the output for a GGPlot. It determines the average survival probability for both the females and males,
      then it determines the population average based on this. This is written to a file, including the current time and the age. **/
     
+    std::string fileName = "meanMutBias_" + std::to_string(p.meanMutationBias)
+                            + "_sdMut_" + std::to_string(p.sdMutationalEffectSize)
+                            + "_outputFacetWrap.csv";
+    //std::cout << fileName << "\n"; // TODO: remove the dot for the filename. 
     if (t == 0) {
         std::ofstream ofs;
         ofs.open("outputFacetWrap.csv"); // output file

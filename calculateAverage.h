@@ -7,7 +7,9 @@
 
 #pragma once
 
-std::array<double, numAgeClasses> calcAverageAcrossAgeClasses(const std::vector<Individual>& individuals) {
+using indVec = std::vector<Individual>;
+
+std::array<double, numAgeClasses> calcAverageAcrossAgeClasses(const indVec& individuals) {
     /**Function to calculate the average survival probability across the age classes
      over a vector of individuals. */
     std::array<double, numAgeClasses> popAverage;
@@ -24,7 +26,7 @@ std::array<double, numAgeClasses> calcAverageAcrossAgeClasses(const std::vector<
     return popAverage; // return array with average survival probability for every age over the individuals
 }
 
-std::vector<double> calcLifeExpectancyPerIndividual(const std::vector<Individual>& individuals){
+std::vector<double> calcLifeExpectancyPerIndividual(const indVec& individuals){
     /**Function to calculate the Life Expectancy per individual . TODO: should 1 be added to the sum? **/
     std::vector<double> lifeExpectancy;
     for (int individual = 0; individual < individuals.size(); ++individual){ // loop through every individual
@@ -38,7 +40,8 @@ std::vector<double> calcLifeExpectancyPerIndividual(const std::vector<Individual
             lifeExpectancyPerIndividual.push_back(lifeExpectancyInd);
         }
         double sum = std::accumulate(lifeExpectancyPerIndividual.begin(), lifeExpectancyPerIndividual.end(), 0.0);
-        lifeExpectancy.push_back(sum); 
+        // lambda function ??
+        lifeExpectancy.push_back(sum);
     }
     return lifeExpectancy;
 }
