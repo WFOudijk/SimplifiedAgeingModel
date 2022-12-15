@@ -10,15 +10,15 @@
 
 struct Parameters {
     // initialise the parameters
-    Parameters() : totalPopulation(100),
+    Parameters() : totalPopulation(10000),
                    initSurvProb(0.95),
                    numOfOffspringPerFemale(1),
                    mutationProb(0.01),
                    meanMutationBias(-0.001),
                    sdMutationalEffectSize(0.01),
                    extrinsicMortRisk(0.05),
-                   outputTime(1),
-                   tEnd(10){
+                   outputTime(250),
+                   tEnd(10000){
                        halfPopulation = totalPopulation / 2;
                    }
     

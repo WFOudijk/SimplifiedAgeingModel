@@ -4,12 +4,13 @@
 //
 //  Created by Willemijn Oudijk on 07/12/2022.
 //
+#pragma once
 
 #include <fstream>
 #include <cstdlib>
 #include <vector>
 #include "calculateAverage.h"
-#pragma once
+
 
 using indVec = std::vector<Individual>;
 
@@ -54,10 +55,6 @@ void createOuputForGGPlot(const indVec& males,
     /**Function to create the output for a GGPlot. It determines the average survival probability for both the females and males,
      then it determines the population average based on this. This is written to a file, including the current time and the age. **/
     
-    std::string fileName = "meanMutBias_" + std::to_string(p.meanMutationBias)
-                            + "_sdMut_" + std::to_string(p.sdMutationalEffectSize)
-                            + "_outputFacetWrap.csv";
-    //std::cout << fileName << "\n"; // TODO: remove the dot for the filename. 
     if (t == 0) {
         std::ofstream ofs;
         ofs.open("outputFacetWrap.csv"); // output file
@@ -79,7 +76,11 @@ void createOuputForGGPlot(const indVec& males,
     
     for (int i = 0; i < femaleAverage.size(); ++i) { // loop through every age
         double popAverage = (femaleAverage[i] + maleAverage[i]) * 0.5; // calculate population average
-        ofs << t << " " << i << " " << popAverage << std::endl; // write current time, age and average to file
+        ofs << t << " "
+            << p.meanMutationBias << " "
+            << p.sdMutationalEffectSize << " "
+            << i << " "
+            << popAverage << std::endl; // write current time, age and average to file
     }
     ofs.close();
 }

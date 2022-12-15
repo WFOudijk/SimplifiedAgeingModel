@@ -4,10 +4,10 @@
 //
 //  Created by Willemijn Oudijk on 14/12/2022.
 //
-
+#pragma once
 #include <iostream>
 #include "Individual.h"
-#pragma once
+
 
 using indVec = std::vector<Individual>;
 
