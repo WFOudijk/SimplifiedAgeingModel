@@ -4,21 +4,21 @@
 //
 //  Created by Willemijn Oudijk on 07/12/2022.
 //
-
-#include <fstream>
 #pragma once
+#include <fstream>
+
 
 struct Parameters {
     // initialise the parameters
-    Parameters() : totalPopulation(10000),
+    Parameters() : totalPopulation(100),
                    initSurvProb(0.95),
                    numOfOffspringPerFemale(1),
                    mutationProb(0.01),
                    meanMutationBias(-0.001),
                    sdMutationalEffectSize(0.01),
                    extrinsicMortRisk(0.05),
-                   outputTime(1000),
-                   tEnd(10000){
+                   outputTime(1),
+                   tEnd(10){
                        halfPopulation = totalPopulation / 2;
                    }
     
