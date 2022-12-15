@@ -7,11 +7,11 @@
 #pragma once
 
 #include "parameters.h"
-#include "rnd_t.h"
+#include "Randomizer.h"
 
 #include <array>
 
-const int numAgeClasses = 20;
+const int numAgeClasses = 20; // the number of ages and genes every individual contains 
 using arrayOfGenes = std::array<double, numAgeClasses>;
 
 struct Individual {
@@ -27,26 +27,39 @@ struct Individual {
     // to calculate the average survival probability by averaging
     // the mothers and fathers survival probability
     arrayOfGenes averageSurvivalProb;
-    // TODO: Q: this is not default constructor anymore > how to? Need p. 
-    Individual(const parameters& p) : age(0){ // default constructor with numAgeClasses genes all starting at initSurvProb
+    
+    // TODO: Q: this is not default constructor anymore > how to? Need p.
+    Individual(const Parameters& p) : age(0){
+        // default constructor with numAgeClasses genes all starting at initSurvProb
         genesMaternal.fill(p.initSurvProb); // get this value from parameter struct
         genesPaternal.fill(p.initSurvProb);
         calculateAverageSurvivalProb();
     }
-
-    Individual(const Individual& other) = default;
     
-    Individual(const Individual& mother, const Individual& father, rnd_t& rng, const parameters& p): age(0){
+    Individual(const double initVal) : age(0){ // constructor to set initial survival probabilities
+        genesMaternal.fill(initVal);
+        genesPaternal.fill(initVal);
+        calculateAverageSurvivalProb();
+    }
+
+    Individual(const Individual& other) = default; // default copy constructor is used
+    
+    Individual(const Individual& mother,
+               const Individual& father,
+               Randomizer& rng,
+               const Parameters& p): age(0){
         /**Constructor to reproduce and create offspring (with potential mutations). **/
-        //age = 0;
         for (int i = 0; i < numAgeClasses; ++i){ // loop through every gene
             // first, determine offsprings genome
-            double geneMom = rng.uniform(); // if 1 is picked, offspring gets grandpa's allele for this gene from its mom
+            double geneMom = rng.uniform();
+            // if 1 is picked, offspring gets grandpa's allele for this gene from its mom
             genesMaternal[i] = (geneMom < 0.5) ? mother.genesPaternal[i] : mother.genesMaternal[i];
-            double geneDad = rng.uniform(); // if 1 is picked, offspring gets grandpa's allele for this gene from its dad
+            double geneDad = rng.uniform();
+            // if 1 is picked, offspring gets grandpa's allele for this gene from its dad
             genesPaternal[i] = (geneDad < 0.5) ? father.genesMaternal[i] : father.genesPaternal[i];
             
-            // next, check if a mutation will occur in this gene for both the allele inherited from the mother as well as father
+            // next, check if a mutation will occur in this gene for both
+                // the allele inherited from the mother as well as father
             if (rng.uniform() < p.mutationProb){
                 genesMaternal[i] += rng.drawMutationEffect();
                 if (genesMaternal[i] < 0) genesMaternal[i] = 0;
@@ -70,7 +83,7 @@ struct Individual {
     }
     
     void calculateAverageSurvivalProb();
-    bool dies(rnd_t& rng, const parameters& p);
+    bool dies(Randomizer& rng, const Parameters& p);
 };
 
 void Individual::calculateAverageSurvivalProb(){
@@ -81,7 +94,8 @@ void Individual::calculateAverageSurvivalProb(){
     }
 }
 
-bool Individual::dies(rnd_t& rng, const parameters& p){
+bool Individual::dies(Randomizer& rng,
+                      const Parameters& p){
     /**Function to calculate which individuals will die.**/
     // get the survival prob for the age the individual is
     const double survivalProbForAge = averageSurvivalProb[age];

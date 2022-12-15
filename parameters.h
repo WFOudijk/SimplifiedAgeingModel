@@ -8,9 +8,9 @@
 #include <fstream>
 #pragma once
 
-struct parameters {
+struct Parameters {
     // initialise the parameters
-    parameters() : totalPopulation(10000),
+    Parameters() : totalPopulation(10000),
                    initSurvProb(0.95),
                    numOfOffspringPerFemale(1),
                    mutationProb(0.01),
@@ -40,7 +40,7 @@ struct parameters {
                     std::ifstream& ifs);
 };
 
-void parameters::checkParam(const std::string parID, 
+void Parameters::checkParam(const std::string parID,
                  const std::string focal_parametername,
                  double& parameter,
                  std::ifstream& ifs) {
@@ -50,7 +50,7 @@ void parameters::checkParam(const std::string parID,
     }
 }
 
-void parameters::readParameters(const std::string& parameterFile){
+void Parameters::readParameters(const std::string& parameterFile){
     /**This function receives a parameter file and reads this. Next, the parameters in the file are set to the correct parameters
      in the parameters object.**/
     std::ifstream ifs(parameterFile.c_str());

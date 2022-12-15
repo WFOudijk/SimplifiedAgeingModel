@@ -8,16 +8,18 @@
 #pragma once
 
 using indVec = std::vector<Individual>;
+using arrayOfGenes = std::array<double, numAgeClasses>;
 
-std::array<double, numAgeClasses> calcAverageAcrossAgeClasses(const indVec& individuals) {
+arrayOfGenes calcAverageAcrossAgeClasses(const indVec& individuals) {
     /**Function to calculate the average survival probability across the age classes
      over a vector of individuals. */
-    std::array<double, numAgeClasses> popAverage;
+    arrayOfGenes popAverage;
     popAverage.fill(0.0);
     
     for (const auto& i : individuals) { // loop through the individuals
         for(int j = 0; j < i.averageSurvivalProb.size(); ++j){ // loop through every age group
-            popAverage[j] += i.averageSurvivalProb[j]; // sum the survival prob average of every individual for the jth age group
+            // sum the survival prob average of every individual for the jth age group
+            popAverage[j] += i.averageSurvivalProb[j];
         }
     }
     for(auto& i : popAverage) { // loop through the averages
@@ -27,21 +29,25 @@ std::array<double, numAgeClasses> calcAverageAcrossAgeClasses(const indVec& indi
 }
 
 std::vector<double> calcLifeExpectancyPerIndividual(const indVec& individuals){
-    /**Function to calculate the Life Expectancy per individual . TODO: should 1 be added to the sum? **/
+    /**Function to calculate the Life Expectancy per individual . **/
     std::vector<double> lifeExpectancy;
     for (int individual = 0; individual < individuals.size(); ++individual){ // loop through every individual
         std::vector<double> lifeExpectancyPerIndividual;
         for (int i = 0; i < individuals[individual].genesMaternal.size(); ++i){ // loop through every age
-            double lifeExpectancyInd =
-                    individuals[individual].averageSurvivalProb[i]; // get survival prob of current age and individual
+            double lifeExpectancyInd = // get survival prob of current age and individual
+                    individuals[individual].averageSurvivalProb[i];
             for (int j = 1; j <= i; ++j){ // to make sure every previous survival prob is taken into account
-                lifeExpectancyInd *= individuals[individual].averageSurvivalProb[i - j];
+                // current survivalprob multiplied with every previous survivalprob (per age) of this individual
+                lifeExpectancyInd *=
+                    individuals[individual].averageSurvivalProb[i - j];
             }
-            lifeExpectancyPerIndividual.push_back(lifeExpectancyInd);
+            lifeExpectancyPerIndividual.push_back(lifeExpectancyInd); // add the product to a vector
         }
-        double sum = std::accumulate(lifeExpectancyPerIndividual.begin(), lifeExpectancyPerIndividual.end(), 0.0);
-        // lambda function ??
-        lifeExpectancy.push_back(sum);
+        // the vector is the numOfAge long, with one value per age class. This value represents the likelihood
+        // of the individual becoming that specific age. By summing this you get the life expectancy.
+        double sum = std::accumulate(lifeExpectancyPerIndividual.begin(),
+                                     lifeExpectancyPerIndividual.end(), 0.0);
+        lifeExpectancy.push_back(sum); // this sum is added to a vector
     }
-    return lifeExpectancy;
+    return lifeExpectancy; // this vector consists of the life expectancy per individual
 }

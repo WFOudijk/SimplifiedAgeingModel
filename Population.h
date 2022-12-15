@@ -16,22 +16,23 @@ struct Population{
     indVec females;
     indVec offspring;
     
-    void makePopulation(const parameters& p);
-    void reproduce(rnd_t& rng, const parameters& p);
-    void mortalityRound(rnd_t& rng, std::vector<int>& ageAtDeath, const parameters& p);
-    void addOffspring(const parameters& p, rnd_t& rng);
+    void makePopulation(const Parameters& p);
+    void reproduce(Randomizer& rng, const Parameters& p);
+    void mortalityRound(Randomizer& rng, std::vector<int>& ageAtDeath, const Parameters& p);
+    void addOffspring(const Parameters& p, Randomizer& rng);
 };
 
-void Population::makePopulation(const parameters& p){ // TODO: can be constructor
+void Population::makePopulation(const Parameters& p){ // TODO: can be constructor
     /**This function initialises the population and seperates males and females. **/
     Individual indiv = Individual(p);
     males = indVec(p.halfPopulation, indiv); // intialize males
     females = indVec(p.halfPopulation, indiv); // initialize females
 }
 
-void Population::reproduce(rnd_t& rng, const parameters& p){
-    /**This function is the reproducing step of the adults.  Every female reproduces a numOfOffspringPerFemale number of offspring with
-     random males. **/
+void Population::reproduce(Randomizer& rng,
+                           const Parameters& p){
+    /**This function is the reproducing step of the adults.  Every female reproduces a numOfOffspringPerFemale
+     number of offspring with random males. **/
     
     offspring.clear(); // to make sure the vector is empty
     // to optimize code, reserve the specific space for the offspring vector
@@ -43,8 +44,10 @@ void Population::reproduce(rnd_t& rng, const parameters& p){
     }
 }
 
-void Population::mortalityRound(rnd_t& rng, std::vector<int>& ageAtDeath, const parameters& p){
-    /**This function kills of adults. **/
+void Population::mortalityRound(Randomizer& rng,
+                                std::vector<int>& ageAtDeath,
+                                const Parameters& p){
+    /**This function kills off adults. **/
     for (int male = 0; male < males.size();){
         bool die = males[male].dies(rng, p); // check if current male will die
         if (die){ // if this is the case, remove the male from the vector
@@ -69,7 +72,8 @@ void Population::mortalityRound(rnd_t& rng, std::vector<int>& ageAtDeath, const 
     }
 }
 
-void Population::addOffspring(const parameters& p, rnd_t& rng){
+void Population::addOffspring(const Parameters& p,
+                              Randomizer& rng){
     /**This function adds (random) offspring to the adult vectors untill the vectors are at their maximum again. **/
     while (males.size() < (p.halfPopulation)){
         int randIndex = rng.drawRandomNumber(offspring.size());

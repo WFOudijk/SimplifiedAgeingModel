@@ -1,35 +1,29 @@
 //
-//  rnd_t.h
+//  Randomizer.h
 //  AgeingModel
 //
-//  Created by Willemijn Oudijk on 07/12/2022.
+//  Created by Willemijn Oudijk on 15/12/2022.
 //
 
 #pragma once
 
-struct rnd_t {
+struct Randomizer {
     std::mt19937_64 rng;
-    
-    rnd_t() {
+    Randomizer() {
         unif = std::uniform_real_distribution<double>(0, 1);
     }
-    
     double uniform() {
         return unif(rng);
     }
-    
     void setSeed(size_t s){
         rng.seed(s);
     }
-    
     double drawMutationEffect() {
         return mutationEffect(rng);
     }
-    
     void setMutationEffect(double m, double sd) {
         mutationEffect = std::normal_distribution<double>(m, sd);
-    }
-    
+    }    
     int drawRandomNumber(size_t sizeVector) {
         if (sizeVector < 1) {
             return 0;
@@ -41,3 +35,4 @@ struct rnd_t {
     std::uniform_real_distribution<double> unif;
     std::normal_distribution<double> mutationEffect;
 };
+

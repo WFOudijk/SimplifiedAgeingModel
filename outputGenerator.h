@@ -35,9 +35,10 @@ void createOutputForPlot(const indVec& males,
         std::cerr << "Error. Unable to open output file.\n";
         exit(EXIT_FAILURE);
     }
-    
-    auto female_avg = calcAverageAcrossAgeClasses(females); // calculate average survival prob per age of the females
-    auto male_avg = calcAverageAcrossAgeClasses(males); // calculate average survival prob per age of the males
+    // calculate average survival prob per age of the females
+    auto female_avg = calcAverageAcrossAgeClasses(females);
+    // calculate average survival prob per age of the males
+    auto male_avg = calcAverageAcrossAgeClasses(males);
     
     for (int i = 0; i < female_avg.size(); ++i) { // loop through every age
         double pop_avg = (female_avg[i] + male_avg[i]) * 0.5; // calculate population average
@@ -49,7 +50,7 @@ void createOutputForPlot(const indVec& males,
 void createOuputForGGPlot(const indVec& males,
                           const indVec& females,
                           const int t,
-                          const parameters& p){
+                          const Parameters& p){
     /**Function to create the output for a GGPlot. It determines the average survival probability for both the females and males,
      then it determines the population average based on this. This is written to a file, including the current time and the age. **/
     
@@ -97,4 +98,9 @@ void createOutputLifeExpectancy(const std::vector<double>& malesLE,
     for (int i = 0; i < malesLE.size(); ++i){
         ofs << meanMutBias << " " << malesLE[i] << " " << femalesLE[i] << std::endl;
     }
+    ofs.close();
+}
+
+void calcDeathAge(){
+    
 }
