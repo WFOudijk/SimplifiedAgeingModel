@@ -68,11 +68,12 @@ int main(int argc, const char * argv[]) {
                 ageAtDeath.size() << std::endl; // look at age of death over time
 
             createOuputForGGPlot(pop.males, pop.females, t, p); // generate data for ggplot
-            std::vector<double> LEMales = calcLifeExpectancyPerIndividual(pop.males);
-            std::vector<double> LEFemales = calcLifeExpectancyPerIndividual(pop.females);
-            createOutputLifeExpectancy(LEMales, LEFemales, p, t);
+            
         }
     }
+    std::vector<double> LEMales = calcLifeExpectancyPerIndividual(pop.males);
+    std::vector<double> LEFemales = calcLifeExpectancyPerIndividual(pop.females);
+    createOutputLifeExpectancy(LEMales, LEFemales, p);
     
     // to create output of an Individuals vector
     //createOutput(offspringVec);
