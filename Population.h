@@ -8,7 +8,6 @@
 #include <iostream>
 #include "Individual.h"
 
-
 using indVec = std::vector<Individual>;
 
 struct Population{
@@ -78,7 +77,7 @@ void Population::addOffspring(const Parameters& p,
     while (males.size() < (p.halfPopulation)){
         int randIndex = rng.drawRandomNumber(offspring.size());
         males.push_back(offspring[randIndex]); // add a random offspring to the males vector
-        offspring[randIndex] = offspring.back(); // TODO: FB: maybe make function for this removal
+        offspring[randIndex] = offspring.back();
         offspring.pop_back(); // make sure to remove the offspring to prevent repetition
     }
     

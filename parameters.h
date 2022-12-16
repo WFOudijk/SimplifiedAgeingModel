@@ -17,7 +17,7 @@ struct Parameters {
                    meanMutationBias(-0.001),
                    sdMutationalEffectSize(0.01),
                    extrinsicMortRisk(0.05),
-                   outputTime(250),
+                   outputTime(200),
                    tEnd(10000){
                        halfPopulation = totalPopulation / 2;
                    }

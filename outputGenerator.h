@@ -88,9 +88,20 @@ void createOuputForGGPlot(const indVec& males,
 
 void createOutputLifeExpectancy(const std::vector<double>& malesLE,
                                 const std::vector<double>& femalesLE,
-                                const double meanMutBias){
+                                const Parameters& p,
+                                const int t){
     /**This function can be used to create output to look at the individual life expectancy and the mutational bias
      on this life expectancy. **/
+    
+    if (t == 0) {
+        std::ofstream ofs;
+        ofs.open("outputLE.csv"); // output file
+        if (!ofs.is_open()){
+            std::cerr << "Error. Unable to open output file.\n";
+            exit(EXIT_FAILURE);
+        }
+        ofs.close();
+    }
     std::ofstream ofs;
     ofs.open("outputLE.csv", std::ios::app); // output file
     if (!ofs.is_open()){
@@ -98,7 +109,11 @@ void createOutputLifeExpectancy(const std::vector<double>& malesLE,
         exit(EXIT_FAILURE);
     }
     for (int i = 0; i < malesLE.size(); ++i){
-        ofs << meanMutBias << " " << malesLE[i] << " " << femalesLE[i] << std::endl;
+        ofs << t << " "
+        << p.meanMutationBias << " "
+        << p.sdMutationalEffectSize << " "
+        << p.extrinsicMortRisk << " "
+        << malesLE[i] << " " << femalesLE[i] << std::endl;
     }
     ofs.close();
 }

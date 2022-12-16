@@ -60,10 +60,17 @@ int main(int argc, const char * argv[]) {
             std::cout << diff_t.count() << " seconds" << std::endl;
             t_start = t_now;
             std::cout << "total deaths: " << ageAtDeath.size() << std::endl;
-            ofs << t << "," << std::accumulate(ageAtDeath.begin(), ageAtDeath.end(), 0.0) /
+            ofs << t << " "
+            << p.meanMutationBias << " "
+            << p.sdMutationalEffectSize << " "
+            << p.extrinsicMortRisk << " "
+             << std::accumulate(ageAtDeath.begin(), ageAtDeath.end(), 0.0) /
                 ageAtDeath.size() << std::endl; // look at age of death over time
 
             createOuputForGGPlot(pop.males, pop.females, t, p); // generate data for ggplot
+            std::vector<double> LEMales = calcLifeExpectancyPerIndividual(pop.males);
+            std::vector<double> LEFemales = calcLifeExpectancyPerIndividual(pop.females);
+            createOutputLifeExpectancy(LEMales, LEFemales, p, t);
         }
     }
     
@@ -73,9 +80,7 @@ int main(int argc, const char * argv[]) {
     //createOutput(females);
     //createOutputForPlot(males, females);
     //calcLifeExpectancy(pop.males);
-    std::vector<double> LEMales = calcLifeExpectancyPerIndividual(pop.males);
-    std::vector<double> LEFemales = calcLifeExpectancyPerIndividual(pop.females);
-    //createOutputLifeExpectancy(LEMales, LEFemales, p.meanMutationBias);
+    
     
     // to calculate the average age someone dies
 //    std::cout << "total deaths: " << ageAtDeath.size() << std::endl; // every time step
