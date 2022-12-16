@@ -38,9 +38,7 @@ int main(int argc, const char * argv[]) {
     
     // set the mutationEffect distribution with mean and sd of mutation
     rng.setMutationEffect(p.meanMutationBias, p.sdMutationalEffectSize);
-    std::cout << "mean is: " << p.meanMutationBias << " and the sd is: "
-        << p.sdMutationalEffectSize << std::endl;
-    
+
     Population pop;
     pop.makePopulation(p); // initialise population
     

@@ -79,6 +79,7 @@ void createOuputForGGPlot(const indVec& males,
         ofs << t << " "
             << p.meanMutationBias << " "
             << p.sdMutationalEffectSize << " "
+            << p.extrinsicMortRisk << " "
             << i << " "
             << popAverage << std::endl; // write current time, age and average to file
     }

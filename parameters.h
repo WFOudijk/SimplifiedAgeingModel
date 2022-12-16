@@ -67,6 +67,7 @@ void Parameters::readParameters(const std::string& parameterFile){
             checkParam(parID, "meanMutationBias", meanMutationBias, ifs);
             checkParam(parID, "sdMutationalEffectSize", sdMutationalEffectSize, ifs);
             checkParam(parID, "mutationProbability", mutationProb, ifs);
+            checkParam(parID, "extrinsicMortRisk", extrinsicMortRisk, ifs);
         }
         else break;
     }
