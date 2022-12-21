@@ -20,15 +20,13 @@ struct Individual {
     over both parents survival probability per gene/ age. **/
     unsigned int age;
     // the genes are the survival probability rates per age;
-    arrayOfGenes genesMaternal;
+    arrayOfGenes genesMaternal; // TODO: change to allele
     arrayOfGenes genesPaternal;
-    // TODO: std::array<2, std::array<double, numAgeClasses>> One array of both mom and dad
     
     // to calculate the average survival probability by averaging
     // the mothers and fathers survival probability
     arrayOfGenes averageSurvivalProb;
     
-    // TODO: Q: this is not default constructor anymore > how to? Need p.
     Individual(const Parameters& p) : age(0){
         // default constructor with numAgeClasses genes all starting at initSurvProb
         genesMaternal.fill(p.initSurvProb); // get this value from parameter struct

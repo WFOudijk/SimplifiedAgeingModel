@@ -43,51 +43,25 @@ int main(int argc, const char * argv[]) {
     pop.makePopulation(p); // initialise population
     
     auto t_start = std::chrono::system_clock::now();
-    std::ofstream ofs;
-    ofs.open("outputDeathAge.csv"); // output file
-//    std::vector<int> ageAtDeath;
+    
     for (int t = 0; t < p.tEnd; ++t){
-        std::vector<int> ageAtDeath;
+        std::vector<int> ageAtDeath; // to keep track of the death ages
         pop.reproduce(rng, p); // reproduce to make offspring
-        pop.mortalityRound(rng, ageAtDeath, p); // mortality round of the adults
-        pop.addOffspring(p, rng); // adding offspring to the adults
-        
+        pop.mortalityRound(rng, p, ageAtDeath); // mortality round of the adults
+        pop.addOffspring(p, rng); // adding offspring to the adults        
         // output
         if (t % p.outputTime == 0) { // to prevent every time step of being outputted
-            std::cout << t << " ";
-            auto t_now = std::chrono::system_clock::now();
-            std::chrono::duration<double> diff_t = t_now - t_start;
-            std::cout << diff_t.count() << " seconds" << std::endl;
-            t_start = t_now;
-            std::cout << "total deaths: " << ageAtDeath.size() << std::endl;
-            ofs << t << " "
-            << p.meanMutationBias << " "
-            << p.sdMutationalEffectSize << " "
-            << p.extrinsicMortRisk << " "
-             << std::accumulate(ageAtDeath.begin(), ageAtDeath.end(), 0.0) /
-                ageAtDeath.size() << std::endl; // look at age of death over time
-
-            createOuputForGGPlot(pop.males, pop.females, t, p); // generate data for ggplot
-            
+            std::cout << t << std::endl;
+            createOutputAgeDeath(t, p, ageAtDeath); // generate data for average death age
+            createOuputForGGPlot(pop.males, pop.females, t, p); // generate data for ggplot            
         }
     }
-    std::vector<double> LEMales = calcLifeExpectancyPerIndividual(pop.males);
-    std::vector<double> LEFemales = calcLifeExpectancyPerIndividual(pop.females);
-    createOutputLifeExpectancy(LEMales, LEFemales, p);
+    createOutputLifeExpectancy(pop.males, pop.females, p); // generate data for LE plot
     
-    // to create output of an Individuals vector
-    //createOutput(offspringVec);
-    //createOutput(pop.males);
-    //createOutput(females);
-    //createOutputForPlot(males, females);
-    //calcLifeExpectancy(pop.males);
-    
-    
-    // to calculate the average age someone dies
-//    std::cout << "total deaths: " << ageAtDeath.size() << std::endl; // every time step
-//    std::cout << "Average age to die: "
-//            << std::accumulate(ageAtDeath.begin(), ageAtDeath.end(), 0.0) / ageAtDeath.size()
-//            << std::endl; // look at age of death over time
-//
+    // to print the duration of the program to the terminal
+    auto t_now = std::chrono::system_clock::now();
+    std::chrono::duration<double> diff_t = t_now - t_start;
+    std::cout << "Finished. The program took: " << diff_t.count() << " seconds" << std::endl;
+    t_start = t_now;
     return 0;
 }

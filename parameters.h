@@ -7,14 +7,13 @@
 #pragma once
 #include <fstream>
 
-
 struct Parameters {
     // initialise the parameters
-    Parameters() : totalPopulation(10000),
+    Parameters() : totalPopulation(1000),
                    initSurvProb(0.95),
                    numOfOffspringPerFemale(1),
                    mutationProb(0.01),
-                   meanMutationBias(-0.001),
+                   meanMutationBias(-0.01),
                    sdMutationalEffectSize(0.01),
                    extrinsicMortRisk(0.05),
                    outputTime(200),
@@ -41,9 +40,9 @@ struct Parameters {
 };
 
 void Parameters::checkParam(const std::string parID,
-                 const std::string focal_parametername,
-                 double& parameter,
-                 std::ifstream& ifs) {
+                            const std::string focal_parametername,
+                            double& parameter,
+                            std::ifstream& ifs) {
     if (parID == focal_parametername) {
         ifs >> parameter;
         std::clog << "Parameter " << parID << " is set to " << parameter << std::endl;

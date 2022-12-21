@@ -40,3 +40,4 @@ backup/main.cpp
 backup/LICENSE
 backup/Individual.h
 backup/calculateAverage.h
+data/

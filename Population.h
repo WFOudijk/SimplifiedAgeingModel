@@ -17,7 +17,7 @@ struct Population{
     
     void makePopulation(const Parameters& p);
     void reproduce(Randomizer& rng, const Parameters& p);
-    void mortalityRound(Randomizer& rng, std::vector<int>& ageAtDeath, const Parameters& p);
+    void mortalityRound(Randomizer& rng, const Parameters& p, std::vector<int>& ageAtDeath);
     void addOffspring(const Parameters& p, Randomizer& rng);
 };
 
@@ -32,7 +32,6 @@ void Population::reproduce(Randomizer& rng,
                            const Parameters& p){
     /**This function is the reproducing step of the adults.  Every female reproduces a numOfOffspringPerFemale
      number of offspring with random males. **/
-    
     offspring.clear(); // to make sure the vector is empty
     // to optimize code, reserve the specific space for the offspring vector
     offspring.reserve(females.size() * p.numOfOffspringPerFemale);
@@ -44,8 +43,8 @@ void Population::reproduce(Randomizer& rng,
 }
 
 void Population::mortalityRound(Randomizer& rng,
-                                std::vector<int>& ageAtDeath,
-                                const Parameters& p){
+                                const Parameters& p,
+                                std::vector<int>& ageAtDeath){
     /**This function kills off adults. **/
     for (int male = 0; male < males.size();){
         bool die = males[male].dies(rng, p); // check if current male will die

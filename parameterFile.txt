@@ -1,4 +1,5 @@
-meanMutationBias -0.001
-sdMutationalEffectSize 0.01
+meanMutationBias -0.01
+sdMutationalEffectSize 0.001
 mutationProbability 0.01
+extrinsicMortRisk 0.1
 
