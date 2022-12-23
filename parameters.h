@@ -23,7 +23,7 @@ struct Parameters {
     
     int totalPopulation; // total population size
     double halfPopulation; // to determine number of males and females
-    double initSurvProb; // initial survival probability for all the genes
+    double initSurvProb; // initial survival probability for every gene
     int numOfOffspringPerFemale; // number of offspring a female should produce 
     double mutationProb; // probability a mutation will occur
     double meanMutationBias; // the mean bias of a mutation on survival probability
@@ -43,6 +43,7 @@ void Parameters::checkParam(const std::string parID,
                             const std::string focal_parametername,
                             double& parameter,
                             std::ifstream& ifs) {
+    // set parameter from file to parameter in object parameter
     if (parID == focal_parametername) {
         ifs >> parameter;
         std::clog << "Parameter " << parID << " is set to " << parameter << std::endl;
@@ -51,7 +52,7 @@ void Parameters::checkParam(const std::string parID,
 
 void Parameters::readParameters(const std::string& parameterFile){
     /**This function receives a parameter file and reads this. Next, the parameters in the file are set to the correct parameters
-     in the parameters object.**/
+     in the parameters object using the checkParam function.**/
     std::ifstream ifs(parameterFile.c_str());
     if(!ifs.is_open()){
         std::cerr << "Error. Unable to read the following parameter file: "
@@ -61,8 +62,8 @@ void Parameters::readParameters(const std::string& parameterFile){
     std::clog << "Reading parameters from file: " << parameterFile << std::endl;
     for(;;){
         std::string parID;
-        ifs >> parID;
-        if(ifs.good()) {
+        ifs >> parID; // get row in file
+        if(ifs.good()) { // setting of the parameters
             checkParam(parID, "meanMutationBias", meanMutationBias, ifs);
             checkParam(parID, "sdMutationalEffectSize", sdMutationalEffectSize, ifs);
             checkParam(parID, "mutationProbability", mutationProb, ifs);

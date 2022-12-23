@@ -15,7 +15,8 @@ const int numAgeClasses = 20; // the number of ages and genes every individual c
 using arrayOfGenes = std::array<double, numAgeClasses>;
 
 struct Individual {
-    /**Structure Individual with age, maternal genes and paternal genes. Every gene contains a number which
+    /**Structure Individual with age, maternal genes and paternal genes. The combination of the maternal and
+     paternal genetic information make up the gene from the individual. Every gene contains a number which
      represents the survival probability. The function calculateSurvivalProb() calculates the average survival probability per gene/ age
     over both parents survival probability per gene/ age. **/
     unsigned int age;
@@ -50,10 +51,10 @@ struct Individual {
         for (int i = 0; i < numAgeClasses; ++i){ // loop through every gene
             // first, determine offsprings genome
             double geneMom = rng.uniform();
-            // if 1 is picked, offspring gets grandpa's allele for this gene from its mom
+            // if 1 is picked, offspring gets its mother's paternal allele for this gene
             genesMaternal[i] = (geneMom < 0.5) ? mother.genesPaternal[i] : mother.genesMaternal[i];
             double geneDad = rng.uniform();
-            // if 1 is picked, offspring gets grandpa's allele for this gene from its dad
+            // if 1 is picked, offspring gets its father's maternal allele for this gene
             genesPaternal[i] = (geneDad < 0.5) ? father.genesMaternal[i] : father.genesPaternal[i];
             
             // next, check if a mutation will occur in this gene for both
