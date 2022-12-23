@@ -120,12 +120,11 @@ void createOutputAgeDeath(const int t,
     }
     std::ofstream ofs;
     ofs.open("outputDeathAge.csv", std::ios::app); // output file for age of death
-    //std::vector<int> ageAtDeath;
     ofs << t << " "
     << p.meanMutationBias << " "
     << p.sdMutationalEffectSize << " "
     << p.extrinsicMortRisk << " "
      << std::accumulate(ageAtDeath.begin(), ageAtDeath.end(), 0.0) /
-        ageAtDeath.size() << std::endl; // look at age of death over time
+        ageAtDeath.size() << std::endl; // look at average age of death over time
     ofs.close();
 }

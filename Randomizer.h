@@ -22,9 +22,11 @@ struct Randomizer {
         return mutationEffect(rng);
     }
     void setMutationEffect(double m, double sd) {
+        // create normal distribution based on user defined mean and standard deviation
         mutationEffect = std::normal_distribution<double>(m, sd);
     }    
     int drawRandomNumber(size_t sizeVector) {
+        // to pick a random index in a vector
         if (sizeVector < 1) {
             return 0;
         }

@@ -30,9 +30,9 @@ arrayOfGenes calcAverageAcrossAgeClasses(const indVec& individuals) {
 
 std::vector<double> calcLifeExpectancyPerIndividual(const indVec& individuals){
     /**Function to calculate the Life Expectancy per individual . **/
-    std::vector<double> lifeExpectancy;
+    std::vector<double> lifeExpectancy; // for actual life expectancy per individual
     for (auto individual = 0u; individual < individuals.size(); ++individual){ // loop through every individual
-        std::vector<double> lifeExpectancyPerIndividual;
+        std::vector<double> lifeExpectancyPerIndividual; // per individual, a likelihood for every age class
         for (auto i = 0u; i < individuals[individual].genesMaternal.size(); ++i){ // loop through every age
             double lifeExpectancyInd = // get survival prob of current age and individual
                     individuals[individual].averageSurvivalProb[i];
