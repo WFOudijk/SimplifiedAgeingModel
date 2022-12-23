@@ -1,108 +1,207 @@
+# RSCRIPT: Simplified Ageing Model - Willemijn Oudijk - created 16 december 2022
+
 library(ggplot2)
 
-# read the datafile 
-myData <- read.csv("/Users/willemijnoudijk/Library/Developer/Xcode/DerivedData/AgeingModel-gddgkdzqixdlpqdakssjsiqxffsy/Build/Products/Release/outputFacetWrap.csv",
-                   header = F, sep = " ")
-myData <- read.csv("/Users/willemijnoudijk/Library/Developer/Xcode/DerivedData/AgeingModel-gddgkdzqixdlpqdakssjsiqxffsy/Build/Products/Release/niceOutput.csv",
-                   header = F, sep = " ")
-myData <- read.csv("/Users/willemijnoudijk/Documents/STUDY/Master Biology/C++Course /miniProject/AgeingModel/AgeingModel/data/outputFacetWrap_min0_01_sd0_01.csv",
-                   header = F, sep = " ")
+# params: 
+# totalPopulation = 10.000
+# initSurvProb = 0.95
+# numOfOffspringPerFemale = 1
+# mutationProb = 0.01
+# extrinsicMortRisk = 0.05
+# outputTime = 200
+# tEnd = 10.000
 
-colnames(myData) <- c("time", "age", "survivalProb") # set colnames 
-colnames(myData) <- c("time", "mean", "sd", "extrinsicMort", "age", "survivalProb") # for only mean_sd_varied
+# change path to your data folder 
+path <- "/Users/willemijnoudijk/Documents/STUDY/Master Biology/C++Course /miniProject/AgeingModel/AgeingModel/data/"
+# change path to where you want the plots to be outputted 
+output_path <- "/Users/willemijnoudijk/Documents/STUDY/Master Biology/C++Course /miniProject/plots/"
 
-# 1579802101 seed with tEnd = 100.000, mutProb = 0.2, totalPop = 100, meanMut = -0.001, sd = 0.01 
-# use facet wrap to visualize survival probabilities over time for every age 
-
-p<- ggplot(data = myData, aes(time, survivalProb)) + geom_line()
+######## default params ##########
+# mean = -0.01 and sd = 0.01
+myData <- read.csv(paste(path, "outputFacetWrap_mean_min_0_01_sd_0_01.csv", sep = ""),
+                   header = F, sep = " ")
+colnames(myData) <- c("time", "mean", "sd", "extrinsicMort", "age", "survivalProb") 
+p <- ggplot(data = myData, aes(x = time, y = survivalProb)) + 
+  geom_line() + scale_color_viridis_c(option = "A") + 
+  labs(title = "The survival probability over time for all age classes", 
+       subtitle = "with mean = -0.01 and standard deviation = 0.01",
+       x = "Time",
+       y = "Survival Probability") +
+  theme(axis.text.x = element_text(angle = 90))
 p + facet_wrap(vars(age))
+# to save the plot 
+ggsave(paste(output_path, "plot_default_params.pdf", sep = ""), plot = last_plot())
 
+# same data, different visualization. Time is colouring. 
 ggplot(data = myData, aes(x = age, y = survivalProb, col = time, group = time)) + 
   geom_line() +
+  labs(title = "The survival probability for all age classes", 
+       subtitle = "with mean = -0.01 and standard deviation = 0.01",
+       x = "Age",
+       y = "Survival Probability") +
   scale_color_viridis_c(option = "A")
+ggsave(paste(output_path, "plot_default_params_2.pdf", sep = ""), plot = last_plot())
 
-# to plot the life expectancy against the mutation bias 
-myDataLE <- read.csv("/Users/willemijnoudijk/Library/Developer/Xcode/DerivedData/AgeingModel-gddgkdzqixdlpqdakssjsiqxffsy/Build/Products/Debug/outputLE.csv",
-                     header = F, sep = " ")
-colnames(myDataLE) <- c("meanMutationEffect", "LifeExpectancyMales", "LifeExpectancyFemales") # set colnames 
-coloursLegend <- c("LifeExpectancyMales" = "royalblue",
-             "LifeExpectancyFemales" = "coral1")
-ggplot() +
-  geom_point(data = myDataLE, aes(x = meanMutationEffect, y = LifeExpectancyMales,
-                                  colour = "LifeExpectancyMales")) +
-  geom_point(data = myDataLE, aes(x = meanMutationEffect, y = LifeExpectancyFemales,
-                                  colour = "LifeExpectancyFemales"), alpha = 0.3) +
-  theme_bw() +
-  labs(title = "The (mean) mutation bias and the life expectancy",
-      subtitle = "per individual",
-       x = "Mutation bias", 
-       y = "Life expectancy (age)") +
-  scale_color_manual(values = coloursLegend)
+######## varying mu and sigma ##########
+# mean, mu = -0.005 + repl * 0.003 (repl = 1:20)
 
-# different ouputs: 
-# mean = -0.01
-# sd = 0.01
-myData <- read.csv("/Users/willemijnoudijk/Library/Developer/Xcode/DerivedData/AgeingModel-gddgkdzqixdlpqdakssjsiqxffsy/Build/Products/Release/outputFacetWrap_mean_min_0_01.csv",
-                   header = F, sep = " ")
-colnames(myData) <- c("time", "age", "survivalProb") # set colnames 
-
-# 1579802101 seed with tEnd = 100.000, mutProb = 0.2, totalPop = 100, meanMut = -0.001, sd = 0.01 
-# use facet wrap to visualize survival probabilities over time for every age 
-p <- ggplot(data = myData, aes(time, survivalProb)) + geom_line()
-p + facet_wrap(vars(age)) +
-  ylim(0.8, 1)
-
-
-# mean = -0.001
-# sd = 0.001
-myData <- read.csv("/Users/willemijnoudijk/Library/Developer/Xcode/DerivedData/AgeingModel-gddgkdzqixdlpqdakssjsiqxffsy/Build/Products/Release/outputFacetWrap_mean_min_0.001_sd_0_001.csv",
-                   header = F, sep = " ")
-colnames(myData) <- c("time", "age", "survivalProb") # set colnames 
-
-# use facet wrap to visualize survival probabilities over time for every age 
-p <- ggplot(data = myData, aes(time, survivalProb)) + geom_line()
-p + facet_wrap(vars(age)) +
-  ylim(0.9, 1)
-
-
-# mean = -0.5
-# sd = 0.01
-myData <- read.csv("/Users/willemijnoudijk/Library/Developer/Xcode/DerivedData/AgeingModel-gddgkdzqixdlpqdakssjsiqxffsy/Build/Products/Release/outputFacetWrap_mean_min0_5.csv",
-                   header = F, sep = " ")
-colnames(myData) <- c("time", "age", "survivalProb") # set colnames 
-
-# use facet wrap to visualize survival probabilities over time for every age 
-p <- ggplot(data = myData, aes(time, survivalProb)) + geom_line()
+######### sd = mean / 10 ###########
+parent_path <- paste(path, "mean_sd_varied_20_reps/", sep = "")
+f <- list.files(path = parent_path, pattern = "outputFacetWrap.csv", recursive = T)
+found <- c()
+for (x in f) {
+  file_name <- paste0(parent_path, x)
+  local_data <- read.csv(file_name, header = F, sep = " ")
+  found <- rbind(found, local_data)
+}
+colnames(found) <- c("time", "mean", "sd", "extrinsicMort", "age", "survivalProb") # for only mean_sd_varied
+p <- ggplot(data = found, aes(x = time, y = survivalProb, col = mean, group = mean)) + 
+  geom_line() + scale_color_viridis_c(option = "A") + 
+  labs(title = expression("Mutation bias (" * mu * 
+                            ") = -0.044 ~ 0.01; Effect size (" * sigma * ") = |" * mu * " / 10|"), 
+       x = "Time",
+       y = "Survival Probability") +
+  theme(axis.text.x = element_text(angle = 90))
 p + facet_wrap(vars(age))
+ggsave(paste(output_path, "plot_mean_sd_10.pdf", sep = ""), plot = last_plot()) #to save file 
 
+######### sd = mean / 5 ##########
+parent_path <- paste(path, "sd_div_5/", sep = "")
+f <- list.files(path = parent_path, pattern = "outputFacetWrap.csv", recursive = T)
+found <- c()
+for (x in f) {
+  file_name <- paste0(parent_path, x)
+  local_data <- read.csv(file_name, header = F, sep = " ")
+  found <- rbind(found, local_data)
+}
+colnames(found) <- c("time", "mean", "sd", "extrinsicMort", "age", "survivalProb") # for only mean_sd_varied
 
-# mean = 0.01
-# sd = 0.01
-myData <- read.csv("/Users/willemijnoudijk/Library/Developer/Xcode/DerivedData/AgeingModel-gddgkdzqixdlpqdakssjsiqxffsy/Build/Products/Release/outputFacetWrap_mean_0_01.csv",
-                   header = F, sep = " ")
-colnames(myData) <- c("time", "age", "survivalProb") # set colnames 
-
-# use facet wrap to visualize survival probabilities over time for every age 
-p <- ggplot(data = myData, aes(time, survivalProb)) + geom_line()
+# original data for every time point 
+p <- ggplot(data = found, aes(x = time, y = survivalProb, col = mean, group = mean)) + 
+  geom_line() + scale_color_viridis_c(option = "A") + 
+  labs(title = expression("Mutation bias (" * mu * 
+                            ") = -0.044 ~ 0.01; Effect size (" * sigma * ") = |" * mu * " / 5|"),
+       x = "Time",
+       y = "Survival Probability") +
+  theme(axis.text.x = element_text(angle = 90))
 p + facet_wrap(vars(age))
-
-# death age 
-myData <- read.csv("/Users/willemijnoudijk/Library/Developer/Xcode/DerivedData/AgeingModel-gddgkdzqixdlpqdakssjsiqxffsy/Build/Products/Release/outputDeathAge.csv",
-                   header = F)
-colnames(myData) <- c("time", "averageDeathAge")
-ggplot(myData, aes(time, averageDeathAge)) + geom_point() # should increase over time 
+ggsave(paste(path, "plot_varySD_mut_5.pdf", sep = ""), plot = last_plot()) #to save file 
 
 
-# to visualize drift, a small population of 100 was used 
-myData <- read.csv("/Users/willemijnoudijk/Library/Developer/Xcode/DerivedData/AgeingModel-gddgkdzqixdlpqdakssjsiqxffsy/Build/Products/Release/outputFacetWrap_DRIFT_smallPop.csv",
-                   header = F, sep = " ")
-colnames(myData) <- c("time", "age", "survivalProb") # set colnames 
-p <- ggplot(data = myData, aes(time, survivalProb)) + geom_line()
+######### sd = mean / 2 ##########
+parent_path <- paste(path, "sd_div_2/", sep = "")
+f <- list.files(path = parent_path, pattern = "outputFacetWrap.csv", recursive = T)
+found <- c()
+for (x in f) {
+  file_name <- paste0(parent_path, x)
+  local_data <- read.csv(file_name, header = F, sep = " ")
+  found <- rbind(found, local_data)
+}
+colnames(found) <- c("time", "mean", "sd", "extrinsicMort", "age", "survivalProb") # for only mean_sd_varied
+
+# original data for every time point 
+p <- ggplot(data = found, aes(x = time, y = survivalProb, col = mean, group = mean)) + 
+  geom_line() + scale_color_viridis_c(option = "A") + 
+  labs(title = expression("Mutation bias (" * mu * 
+                            ") = -0.044 ~ 0.01; Effect size (" * sigma * ") = |" * mu * " / 2|"),
+       x = "Time",
+       y = "Survival Probability") +
+  theme(axis.text.x = element_text(angle = 90))
 p + facet_wrap(vars(age))
+ggsave(paste(path, "plot_varySD_mut_half.pdf", sep = ""), plot = last_plot()) #to save file 
 
+############ sd = mean ###########
+parent_path <- paste(path, "mean_equal_sd_varied_20_reps/", sep = "")
+f <- list.files(path = parent_path, pattern = "outputFacetWrap.csv", recursive = T)
+found <- c()
+for (x in f) {
+  file_name <- paste0(parent_path, x)
+  local_data <- read.csv(file_name, header = F, sep = " ")
+  found <- rbind(found, local_data)
+}
+colnames(found) <- c("time", "mean", "sd", "extrinsicMort", "age", "survivalProb") # for only mean_sd_varied
 
+p <- ggplot(data = found, aes(x = time, y = survivalProb, col = mean, group = mean)) + 
+  geom_line() + scale_color_viridis_c(option = "A") + 
+  labs(title = expression("Mutation bias (" * mu * 
+                            ") = -0.044 ~ 0.01; Effect size (" * sigma * ") = |" * mu * "|"), 
+       x = "Time",
+       y = "Survival Probability") +
+  theme(axis.text.x = element_text(angle = 90))
+p + facet_wrap(vars(age))
+ggsave(paste(path, "plot_mean_sd_equal.pdf", sep = ""), plot = last_plot()) #to save file 
 
+######### sd = mean * 10 ############
+parent_path <- paste(path, "mean_sd_bigger_varied_20_reps/", sep = "")
+f <- list.files(path = parent_path, pattern = "outputFacetWrap.csv", recursive = T)
+found <- c()
+for (x in f) {
+  file_name <- paste0(parent_path, x)
+  local_data <- read.csv(file_name, header = F, sep = " ")
+  found <- rbind(found, local_data)
+}
+colnames(found) <- c("time", "mean", "sd", "extrinsicMort", "age", "survivalProb") # for only mean_sd_varied
 
+p <- ggplot(data = found, aes(x = time, y = survivalProb, col = mean, group = mean)) + 
+  geom_line() + scale_color_viridis_c(option = "A") + 
+  labs(title = "The survival probability over time for all age classes", 
+       subtitle = "with differing means, where standard deviation = mean * 10",
+       x = "Time",
+       y = "Survival Probability") +
+  theme(axis.text.x = element_text(angle = 90))
+p + facet_wrap(vars(age))
+ggsave(paste(path, "plot_sd_bigger_mean.pdf", sep = ""), plot = last_plot()) #to save file 
 
+######## set mean = -0.02 and sd = 0.01 ###############
+####### varying extrinsic mortality ###############
+# extrinsic mortality: repl (1:20) * 0.005 = 0.005 ~ 0.1
 
+########## average age of death over extrinsic mortality probabolity ###############
+parent_path <- paste(path, "extr_mort_report/", sep = "")
+
+f <- list.files(path = parent_path, pattern = "outputDeathAge.csv", recursive = T)
+found <- c()
+for (x in f) {
+  file_name <- paste0(parent_path, x)
+  local_data <- read.csv(file_name, header = F, sep = " ")
+  found <- rbind(found, local_data)
+}
+colnames(found) <- c("time", "mean", "sd", "extrinsicMort", "deathAge") 
+# only look at final time point 
+final_time <- subset(found, time == 9800)
+ggplot(data = final_time, aes(x = extrinsicMort, y = deathAge)) + 
+  geom_line() +
+  scale_color_viridis_c(option = "A") +
+  labs(x = "Extrinsic mortality",
+       y = "Average age of death") 
+ggsave(paste(output_path, "plot_vary_extr_mort_report.pdf", sep = ""), plot = last_plot()) #to save file 
+
+############# life expectancy over extrinsic mortality probabolity ############
+parent_path <- paste(path, "extr_mort_report/", sep = "")
+
+f <- list.files(path = parent_path, pattern = "outputLE.csv", recursive = T)
+found <- c()
+for (x in f) {
+  file_name <- paste0(parent_path, x)
+  local_data <- read.csv(file_name, header = F, sep = " ")
+  found <- rbind(found, local_data)
+}
+colnames(found) <- c("mean", "sd", "extrinsicMort", "MalesLE", "FemalesLE") 
+meanLEs <- data.frame(matrix(nrow = 0, ncol = 3))
+colnames(meanLEs) <- c("ExtrinsicMort", "AverageMaleLE", "AverageFemaleLE")
+for (i in unique(found$extrinsicMort)){
+  sub <- subset(found, extrinsicMort == i)
+  meanMales <- mean(sub$MalesLE)
+  meanFemales <- mean(sub$FemalesLE)
+  meanLEs[nrow(meanLEs) + 1,] <- c(i, meanMales, meanFemales)
+}
+
+# to get the average per extrinsic mortality value for males and females combined 
+averageMalesAndFemales <- rowMeans(meanLEs[, c(2, 3)])
+ggplot(data = meanLEs, aes(x = ExtrinsicMort, y = averageMalesAndFemales)) + 
+  geom_line() +
+  scale_color_viridis_c(option = "A") +
+  labs(x = "Extrinsic mortality",
+       y = "Average life expectancy") 
+ggsave(paste(path, "plot_life_exp_report.pdf", sep = ""), plot = last_plot()) 
 

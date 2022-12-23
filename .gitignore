@@ -40,4 +40,14 @@ backup/main.cpp
 backup/LICENSE
 backup/Individual.h
 backup/calculateAverage.h
+backup/
+data/*/*/parameters.txt
+data/*/*/run
+data/outputFacetWrap_min0_01_sd0_01.csv
+data/outputLE_min0_01_sd_0_01.csv
+data/plot_finalmeansd.pdf
+data/extr_mort_varied/
+data/mean_sd_extMort_varied/
+data/mean_sd_extmort_varied_LEoutput/
+data/mean_sd_varied/
 data/
