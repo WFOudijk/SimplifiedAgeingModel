@@ -11,7 +11,7 @@
 
 #include <array>
 
-const int numAgeClasses = 20; // the number of ages and genes every individual contains 
+const int numAgeClasses = 20; // the number of ages and genes every individual contains
 using arrayOfGenes = std::array<double, numAgeClasses>;
 
 struct Individual {
@@ -20,7 +20,7 @@ struct Individual {
     over both parents survival probability per gene/ age. **/
     unsigned int age;
     // the genes are the survival probability rates per age;
-    arrayOfGenes genesMaternal; // TODO: change to allele
+    arrayOfGenes genesMaternal; 
     arrayOfGenes genesPaternal;
     
     // to calculate the average survival probability by averaging
@@ -86,7 +86,7 @@ struct Individual {
 
 void Individual::calculateAverageSurvivalProb(){
     /** Function to calculate the average survival probability of an individual per age. **/
-    for (int i = 0; i < genesMaternal.size(); ++i){
+    for (auto i = 0u; i < genesMaternal.size(); ++i){
         double average = (genesMaternal[i] + genesPaternal[i]) * 0.5;
         averageSurvivalProb[i] = average;
     }

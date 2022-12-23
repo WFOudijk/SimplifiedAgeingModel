@@ -18,7 +18,7 @@ void createOutput(const indVec& individualVec){
      It calculates the average survival probability for every age or gene. **/
     for (auto individual : individualVec){ // for every individual in the vector
             // calculate average of every gene/ age
-            for (int i = 0; i < individual.genesMaternal.size(); ++i) {
+            for (auto i = 0u; i < individual.genesMaternal.size(); ++i) {
                 std::cout << individual.averageSurvivalProb[i] << " ";
             }
             std::cout << "Age: " << individual.age << " ";
@@ -40,7 +40,7 @@ void createOutputForPlot(const indVec& males,
     // calculate average survival prob per age of the males
     auto male_avg = calcAverageAcrossAgeClasses(males);
     
-    for (int i = 0; i < female_avg.size(); ++i) { // loop through every age
+    for (auto i = 0u; i < female_avg.size(); ++i) { // loop through every age
         double pop_avg = (female_avg[i] + male_avg[i]) * 0.5; // calculate population average
         ofs << pop_avg << std::endl; // write this average to file
     }
@@ -72,7 +72,7 @@ void createOuputForGGPlot(const indVec& males,
     auto femaleAverage = calcAverageAcrossAgeClasses(females); // calculate average survival prob per age of the females
     auto maleAverage = calcAverageAcrossAgeClasses(males); // calculate average survival prob per age of the males
     
-    for (int i = 0; i < femaleAverage.size(); ++i) { // loop through every age
+    for (auto i = 0u; i < femaleAverage.size(); ++i) { // loop through every age
         double popAverage = (femaleAverage[i] + maleAverage[i]) * 0.5; // calculate population average
         ofs << t << " "
             << p.meanMutationBias << " "
@@ -96,7 +96,7 @@ void createOutputLifeExpectancy(const indVec& males,
         std::cerr << "Error. Unable to open output file.\n";
         exit(EXIT_FAILURE);
     }
-    for (int i = 0; i < malesLE.size(); ++i){
+    for (auto i = 0u; i < malesLE.size(); ++i){
         ofs << p.meanMutationBias << " "
         << p.sdMutationalEffectSize << " "
         << p.extrinsicMortRisk << " "

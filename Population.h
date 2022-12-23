@@ -35,7 +35,7 @@ void Population::reproduce(Randomizer& rng,
     offspring.clear(); // to make sure the vector is empty
     // to optimize code, reserve the specific space for the offspring vector
     offspring.reserve(females.size() * p.numOfOffspringPerFemale);
-    for (int j = 0; j < females.size(); ++j){ // loop through every female
+    for (auto j = 0u; j < females.size(); ++j){ // loop through every female
         for (int i = 0; i < p.numOfOffspringPerFemale; ++i){ // loop through number of offspring to produce
             offspring.emplace_back(females[j], males[rng.drawRandomNumber(males.size())], rng, p); // reproduce
         }
@@ -46,7 +46,7 @@ void Population::mortalityRound(Randomizer& rng,
                                 const Parameters& p,
                                 std::vector<int>& ageAtDeath){
     /**This function kills off adults. **/
-    for (int male = 0; male < males.size();){
+    for (auto male = 0u; male < males.size();){
         bool die = males[male].dies(rng, p); // check if current male will die
         if (die){ // if this is the case, remove the male from the vector
             ageAtDeath.push_back(males[male].age);
@@ -58,7 +58,7 @@ void Population::mortalityRound(Randomizer& rng,
     }
     
     // females
-    for (int female = 0; female < females.size();){
+    for (auto female = 0u; female < females.size();){
         bool die = females[female].dies(rng, p); // check if current female will die
         if (die){ // if this is the case, remove female from vector
             ageAtDeath.push_back(females[female].age);
