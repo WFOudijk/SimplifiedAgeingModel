@@ -50,10 +50,4 @@ data/extr_mort_varied/
 data/mean_sd_extMort_varied/
 data/mean_sd_extmort_varied_LEoutput/
 data/mean_sd_varied/
-
-data/extr_mort_report/
-data/mean_equal_sd_varied_20_reps/ 
-data/mean_sd_bigger_varied_20_reps/
-data/mean_sd_varied_20_reps/ 
-data/sd_div_2/
-data/sd_div_5/
+data/
